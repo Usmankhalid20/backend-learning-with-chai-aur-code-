@@ -51,6 +51,7 @@ const userSchema = new mongoose.Schema(
     }
 );
 
+// Hashing the password before saving the user
 userSchema.pre("save", async function (next) {
     if(!this.ismodeified("password")) return next();
 
@@ -80,7 +81,7 @@ userSchema.methods.generateAccessToken = function() {
         }
     )
 }
-
+// Refresh Token
 userSchema.methods.generateRefreshToken = function() {
   return  jwt.sign(
         {
