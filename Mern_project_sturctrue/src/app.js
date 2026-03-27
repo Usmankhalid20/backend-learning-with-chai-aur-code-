@@ -15,4 +15,12 @@ app.use(cookieParser());
 console.log("app initialized")
 
 
+// routes import 
+import userRoutes from "./routers/user.routes.js";
+
+// routes deleration
+// localhost:5000/api/v1/user/register
+
+app.use("/api/v1/user", userRoutes)
+
 export { app }
