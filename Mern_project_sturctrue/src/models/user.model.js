@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema(
         username: {
             type: String,
             required: true,
-            unqiue: true,
+            unique: true,
             lowercase: true,
             trim: true,
             index: true
@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
             email: {
             type: String,
             required: true,
-            unqiue: true,
+            unique: true,
             lowercase: true,
             trim: true,
         },
@@ -52,11 +52,10 @@ const userSchema = new mongoose.Schema(
 );
 
 // Hashing the password before saving the user
-userSchema.pre("save", async function (next) {
-    if(!this.ismodeified("password")) return next();
+userSchema.pre("save", async function () {
+    if(!this.isModified("password")) return;
 
     this.password = await bcrypt.hash(this.password, 10);
-    next();
 })
 
 userSchema.methods.isPasswordCorrect = async function (password){
@@ -76,7 +75,7 @@ userSchema.methods.generateAccessToken = function() {
         },
         process.env.ACCESS_TOKEN_SECRET,
         {
-            EXPIRES_IN: process.env.ACCESS_TOKEN_EXPIRES_IN,
+            expiresIn: process.env.ACCESS_TOKEN_EXPIRES_IN,
 
         }
     )
@@ -91,7 +90,7 @@ userSchema.methods.generateRefreshToken = function() {
         },
         process.env.REFRESH_TOKEN_SECRET,
         {
-            EXPIRES_IN: process.env.REFRESH_TOKEN_EXPIRES_IN,
+            expiresIn: process.env.REFRESH_TOKEN_EXPIRES_IN,
 
         }
     )
