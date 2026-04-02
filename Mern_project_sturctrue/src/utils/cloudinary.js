@@ -19,7 +19,8 @@ import fs from "fs";
                 resource_type: "auto",
             });
             // file has been uploaded successfull 
-            console.log("file is ulpoaded on cloudinary",response.url);
+            // console.log("file is ulpoaded on cloudinary",response.url);
+            fs.unlinkSync(localFilePath)  // remove the locally saved temportary file as we have already uploaded it on cloudinary and we dont need it anymore  
             return response;
        } catch (error) {
         console.error("CLOUDINARY ERROR:", error);
