@@ -7,13 +7,16 @@ import { ApiResponse } from '../utils/ApiResponse.js';
 const generateAccessAndRefershToken = async(userId) => {
   try {
     const user = await User.findById(userId);
+    if(!user) {
+        throw new ApiError(404, 'User not found while generating access and refresh token');
+    }
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
     user.refreshToken = refreshToken
     await user.save({validateBeforeSave: false});
 
-    return {accessToken, refreshToken};
+    return { accessToken, refreshToken };
   } catch (error) {
     throw new ApiError(500, 'something went wrong while generating refersh and access tokens');
   }
@@ -93,7 +96,7 @@ const loginUser = asyncHandler(async (req, res) => {
 
   const {email, username, password} = req.body;
 
-  if(!email || !username) {
+  if(!email && !username) {
     throw new ApiError(400, 'Email and Username are required');
   }
 
