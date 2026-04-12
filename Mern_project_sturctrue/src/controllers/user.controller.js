@@ -116,6 +116,7 @@ if(!ispasswordVaild) {
 const {accessToken, refreshToken} = await generateAccessAndRefershToken(user._id);
 
 const loggedInUser = await User.findById(user._id).select('-password -refreshToken');
+console.log('DEBUG LOGGED IN USER:', loggedInUser);
 
 const options = {
     httpOnly: true,
