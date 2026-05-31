@@ -182,7 +182,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
   const incomingRefreshToken =
     req.cookies?.refreshToken || req.body.refreshToken;
 
-  if (incomingRefreshToken) {
+  if (!incomingRefreshToken) {
     throw new ApiError(401, 'unauthorized request');
   }
   try {
@@ -206,7 +206,7 @@ const refreshAccessToken = asyncHandler(async (req, res) => {
       secure: true,
     };
 
-    const { accessToken, newRefreshToken } =
+    const { accessToken, newRefreshToken: newRefreshToken  } =
       await generateAccessAndRefershToken(user._id);
 
     return res
@@ -246,7 +246,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 const getCurrentUser = asyncHandler(async (req, res) => {
   return res
     .status(200)
-    .json(200, req.user, 'current user fetched successfully');
+    .json(new ApiResponse(200, req.user, 'Current user fetched successfully'));
 });
 
 const updateAccountDetails = asyncHandler(async (req, res) => {
@@ -295,8 +295,8 @@ const updateAvatarImage = asyncHandler(async (req, res) => {
     },
     {
       new: true,
-    }.select('-password -refreshToken')
-  );
+    }
+  ).select('-password -refreshToken');
 
   return res
     .status(200)
@@ -324,8 +324,8 @@ const updateCoverImage = asyncHandler(async (req, res) => {
     },
     {
       new: true,
-    }.select('-password -refreshToken')
-  );
+    }
+  ).select('-password -refreshToken');
 
   return res
     .status(200)
@@ -339,7 +339,7 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     throw new ApiError(400, 'Username is required');
   }
 
-  const channel = User.aggregate([
+  const channel = await User.aggregate([
     {
       $match: {
         username: username.toLowerCase(),
@@ -364,14 +364,14 @@ const getUserChannelProfile = asyncHandler(async (req, res) => {
     {
       $addFields: {
         subscribersCount: {
-          $size:  '$Subscribers',
+          $size:  '$Subscriber',
         },
         channelsSubscribedToCount: {
           $size: '$SubscriberedTo',
         },
         isSubscribed: {
           $cond: {
-            If: {$in: [req.user?._id, '$Subscriber.Subscriber']},
+            if: {$in: [req.user?._id, '$Subscriber.Subscriber']},
             then: true,
             else: false
           }
@@ -447,7 +447,7 @@ const getWatchHistory = asyncHandler(async(req, res) => {
 
    return res
    .status(200)
-   .json(new ApiResponse(200, user[0].WatchHistory), "Watch history fetched successfully")
+   .json(new ApiResponse(200, user[0].watchHistory), "Watch history fetched successfully")
 })
 
 export {
