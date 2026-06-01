@@ -36,5 +36,5 @@ router.route('/avatar').patch(verifyJWT, upload.single('avatar'), updateAvatarIm
 router.route('/cover-image').patch(verifyJWT, upload.single('coverImage'), updateCoverImage);
 router.route('/c/:username').get(verifyJWT, getUserChannelProfile);
 router.route('/history').get(verifyJWT, getWatchHistory);
-
+console.log('User routes loaded successfully');
 export default router;
